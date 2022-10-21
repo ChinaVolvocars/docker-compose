@@ -1,0 +1,23 @@
+version: '3' # 版本号
+services: # 开启服务
+  gitlab: # 服务名称
+    image: 'twang2218/gitlab-ce-zh:latest' # 使用镜像
+    restart: always
+    hostname: 'GitLab' # 主机名称（自定义）
+    environment: # 环境配置
+      TZ: 'Asia/Shanghai'
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.5.59:1080'
+        gitlab_rails['gitlab_ssh_host'] = '192.168.5.59'
+        gitlab_rails['gitlab_shell_ssh_port'] = 1022
+        unicorn['port'] = 8888
+        nginx['listen_port'] = 8080
+    ports: # 端口映射，格式为“本机IP：Docker镜像内部IP”
+      - '1080:8080'
+      - '1043:8443'
+      - '1022:22'
+    volumes: # 挂载卷
+      # 前面是Windows的地址所以斜杠向右；后面是Linux的地址所以向左
+      - D:\Docker\gitlab\config:/etc/gitlab
+      - D:\Docker\gitlab\data:/var/opt/gitlab
+      - D:\Docker\gitlab\logs:/var/log/gitlab
